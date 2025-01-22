@@ -1,0 +1,30 @@
+name: Committer
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+  
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Update 'last_update' file
+        run: |
+          echo "$(date -u)" > last_update
+
+      - name: Configure Git
+        run: |
+          git config user.name "angelvargass"
+          git config user.email ${{secrets.EMAIL}}
+
+      - name: Commit and Push changes
+        run: |
+          git add last_update
+          git commit -m "Updated last_update with timestamp: $(date -u)"
+          git push
